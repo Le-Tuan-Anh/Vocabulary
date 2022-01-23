@@ -10,6 +10,8 @@ import java.io.WriteAbortedException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import com.sun.speech.freetts.Voice;
+import com.sun.speech.freetts.VoiceManager;
 
 public class Controller {
     private final int minSizeOfListToShow = 0, minSizeOfMarkListToShow = 0;
@@ -201,4 +203,10 @@ public class Controller {
             && !word.getWord_target().equals("");
     }
     
+    public void speak(String word) {
+        Voice voice = VoiceManager.getInstance().getVoice("kevin");
+        voice.allocate();
+        voice.speak(word);
+    }
+
 }

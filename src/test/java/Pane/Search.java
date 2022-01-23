@@ -214,7 +214,13 @@ public class Search {
 
     @FXML
     void onMouseClickedSpeakBtn(MouseEvent event) {
-
+        try {
+            Word selectedWord = results.getSelectionModel().getSelectedItem();
+        
+            Main.controller.speak(selectedWord.getWord_target());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @FXML

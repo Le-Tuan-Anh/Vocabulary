@@ -16,6 +16,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         try {
+            System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
             controller.loadFromFile();
             FXMLLoader loader = new FXMLLoader();
             Parent root = loader.load(new FileInputStream("src/resources/FXML/Home.fxml"));
