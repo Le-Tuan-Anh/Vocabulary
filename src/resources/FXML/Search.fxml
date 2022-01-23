@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="480.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Pane.Search">
+   <children>
+      <AnchorPane fx:id="bigPane" layoutX="15.0" layoutY="68.0" prefHeight="397.0" prefWidth="190.0">
+         <children>
+            <TextField fx:id="searchField" onKeyReleased="#onKeyReleasedSearchField" prefHeight="44.0" prefWidth="178.0" promptText="Search">
+               <font>
+                  <Font size="18.0" />
+               </font></TextField>
+            <ListView fx:id="results" layoutY="53.0" onMouseClicked="#onMouseClickListView" prefHeight="345.0" prefWidth="178.0" />
+            <TextArea fx:id="definition" editable="false" layoutX="190.0" prefHeight="313.0" prefWidth="485.0">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </TextArea>
+            <Pane layoutX="190.0" layoutY="325.0" prefHeight="73.0" prefWidth="485.0" style="-fx-background-color: #E8E8E8;">
+               <children>
+                  <Button fx:id="editBtn" layoutX="233.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#onMouseClickedEditBtn" prefHeight="24.0" prefWidth="40.0">
+                     <graphic>
+                        <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="file:/D:/Draft/Java/vocabulary/src/resources/icons/outline_edit_white_24dp.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="deleteBtn" layoutX="294.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#onMouseClickedDeleteBtn">
+                     <graphic>
+                        <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="file:/D:/Draft/Java/vocabulary/src/resources/icons/outline_delete_white_24dp.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="markbtn" layoutX="356.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#onMouseClickedMarkBtn">
+                     <graphic>
+                        <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="file:/D:/Draft/Java/vocabulary/src/resources/icons/outline_bookmark_white_24dp.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="speakBtn" layoutX="420.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#onMouseClickedSpeakBtn">
+                     <graphic>
+                        <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="file:/D:/Draft/Java/vocabulary/src/resources/icons/outline_volume_up_white_24dp.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Label fx:id="pronounce" alignment="CENTER" layoutX="7.0" layoutY="7.0" prefHeight="58.0" prefWidth="202.0" style="-fx-background-color: #FFFFFF;">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+            <ImageView fx:id="starSymbol" fitHeight="36.0" fitWidth="36.0" layoutX="625.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true" visible="false">
+               <image>
+                  <Image url="file:/D:/Draft/Java/vocabulary/src/resources/icons/outline_star_black_24dp.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="editPane" layoutX="69.0" layoutY="67.0" prefHeight="327.0" prefWidth="550.0" style="-fx-background-color: #FFFF00;" styleClass="Label" visible="false">
+         <children>
+            <Button fx:id="confirmEditBtn" alignment="CENTER" layoutX="408.0" layoutY="287.0" mnemonicParsing="false" onMouseClicked="#onMouseClickedConfirmEditBtn" prefHeight="30.0" prefWidth="104.0" text="Confirm" AnchorPane.bottomAnchor="9.800000000000011" AnchorPane.rightAnchor="56.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="cancelEditBtn" layoutX="54.0" layoutY="287.0" mnemonicParsing="false" onMouseClicked="#onMouseClickedCancelEditBtn" prefHeight="31.0" prefWidth="104.0" text="Cancel">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <TextField fx:id="editedTarget" layoutX="20.0" layoutY="14.0" onKeyReleased="#onKeyReleasedSearchField" prefHeight="44.0" prefWidth="238.0" promptText="English word">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="editedExplain" layoutX="20.0" layoutY="70.0" onKeyReleased="#onKeyReleasedSearchField" prefHeight="44.0" prefWidth="238.0" promptText="Vietnamese word">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="editedPhonetic" layoutX="289.0" layoutY="14.0" onKeyReleased="#onKeyReleasedSearchField" prefHeight="44.0" prefWidth="238.0" promptText="Phonetic">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </TextField>
+            <TextArea fx:id="editedEnglishEx" layoutX="20.0" layoutY="122.0" prefHeight="154.0" prefWidth="238.0" promptText="English sentence" />
+            <TextArea fx:id="editedVietnameseEx" layoutX="289.0" layoutY="122.0" prefHeight="154.0" prefWidth="238.0" promptText="Vietnamese sentence" />
+         </children>
+      </AnchorPane>
+      <Label alignment="CENTER" layoutX="15.0" layoutY="10.0" prefHeight="44.0" prefWidth="675.0" style="-fx-background-color: #FF0000;" text="SEARCH" textAlignment="CENTER">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

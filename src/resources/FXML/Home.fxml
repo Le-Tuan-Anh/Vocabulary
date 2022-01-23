@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="770.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Pane.Home">
+   <children>
+      <Button fx:id="searchBtn" layoutY="45.0" mnemonicParsing="false" onMouseClicked="#onSearchBtnClicked" prefHeight="70.0" prefWidth="70.0">
+         <graphic>
+            <ImageView fitHeight="40.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="file:/D:/Draft/Java/vocabulary/src/resources/icons/search.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button fx:id="addBtn" layoutY="125.0" mnemonicParsing="false" onMouseClicked="#onAddBtnClicked" prefHeight="70.0" prefWidth="70.0">
+         <graphic>
+            <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="file:/D:/Draft/Java/vocabulary/src/resources/icons/add.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button fx:id="bookmarkBtn" layoutY="205.0" mnemonicParsing="false" onMouseClicked="#onBookmarkBtnClicked" prefHeight="70.0" prefWidth="70.0">
+         <graphic>
+            <ImageView fitHeight="44.0" fitWidth="43.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="file:/D:/Draft/Java/vocabulary/src/resources/icons/star.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button fx:id="testBtn" layoutY="285.0" mnemonicParsing="false" onMouseClicked="#onTestBtnClicked" prefHeight="70.0" prefWidth="70.0">
+         <graphic>
+            <ImageView fitHeight="48.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="file:/D:/Draft/Java/vocabulary/src/resources/icons/history.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <AnchorPane fx:id="mainPane" layoutX="70.0" prefHeight="480.0" prefWidth="700.0" />
+   </children>
+</AnchorPane>
