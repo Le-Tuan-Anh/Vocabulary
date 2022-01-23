@@ -16,21 +16,22 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
+    <jars>D:\Draft\Java\vocabulary\lib</jars>
   </properties>
 
   <dependencies>
-
     <dependency>
+      <groupId>java-google-speech-api-V2.0</groupId>
+      <artifactId>java-google-speech-api-V2.0</artifactId>
+      <version>2.0</version>
+      <scope>system</scope>
+      <systemPath>${jars}/java-google-speech-api-V2.0.jar</systemPath>
+    </dependency>
+
+    <!-- <dependency>
       <groupId>com.googlecode</groupId>
       <artifactId>google-api-translate-java</artifactId>
       <version>0.92</version>
-    </dependency>
-
-
-    <!-- <dependency>
-      <groupId>com.google.apis</groupId>
-      <artifactId>google-api-services-translate</artifactId>
-      <version>v3-rev20211029-1.32.1</version>
     </dependency> -->
 
     <dependency>

@@ -98,9 +98,6 @@ public class Search {
         try {
             list = FXCollections.observableArrayList(Main.controller.search(searchField.getText().toLowerCase().trim()));
             results.setItems(list);
-
-            // Translate.setHttpReferrer(pReferrer);
-            // definition.setText(Translate.execute(searchField.getText().toLowerCase().trim(), Language.AUTO_DETECT, Language.VIETNAMESE));
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
