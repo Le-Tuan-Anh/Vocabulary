@@ -47,6 +47,7 @@ public class Bookmark {
             definition.clear();
             pronounceWord.setText("");
         } else {
+            Main.controller.loadExample(word);
             definition.setText(word.toString() + "\n" + word.getExamplesToString());
             pronounceWord.setText(word.getWord_phonetic());
         }

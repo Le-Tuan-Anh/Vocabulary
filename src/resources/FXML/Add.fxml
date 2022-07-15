@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="480.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Pane.Add">
+<AnchorPane prefHeight="480.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Pane.Add">
    <children>
       <TextField fx:id="addTarget" layoutX="39.0" layoutY="137.0" prefHeight="50.0" prefWidth="278.0" promptText="Write your English word">
          <font>
@@ -46,12 +46,12 @@
             <Font size="14.0" />
          </font>
       </TextField>
-      <TextArea fx:id="addEnglishExample" layoutX="29.0" layoutY="296.0" prefHeight="142.0" prefWidth="258.0" promptText="Write your Vietnamese examples">
+      <TextArea fx:id="addEnglishExample" layoutX="317.0" layoutY="296.0" prefHeight="142.0" prefWidth="258.0" promptText="Write your Vietnamese examples">
          <font>
             <Font size="14.0" />
          </font>
       </TextArea>
-      <TextArea fx:id="addVietnameseExample" layoutX="304.0" layoutY="296.0" prefHeight="142.0" prefWidth="258.0" promptText="Write your English examples">
+      <TextArea fx:id="addVietnameseExample" layoutX="39.0" layoutY="296.0" prefHeight="142.0" prefWidth="258.0" promptText="Write your English examples">
          <font>
             <Font size="14.0" />
          </font>

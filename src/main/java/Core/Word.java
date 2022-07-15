@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Word implements Comparable<Word>, Serializable {
+    private final int word_ID;
     private String word_target, word_explain, word_phonetic;
     private List<Example> examples = new LinkedList<>();
     private boolean mark = false;
@@ -46,12 +47,20 @@ public class Word implements Comparable<Word>, Serializable {
         this.examples = examples;
     }
 
+    public void addExamples(Example example) {
+        examples.add(example);
+    }
+
     public boolean isMark() {
         return mark;
     }
 
     public void setMark(boolean mark) {
         this.mark = mark;
+    }
+
+    public void mark() {
+        this.mark = !mark;
     }
 
     public LocalDateTime getTime() {
@@ -102,17 +111,21 @@ public class Word implements Comparable<Word>, Serializable {
         }
     }
 
-    public Word(String word_target, String word_explain, String word_phonetic) {
+    public Word(int id, String word_target, String word_explain, String word_phonetic, boolean mark) {
+        this.word_ID = id;
         this.word_target = word_target;
         this.word_explain = word_explain;
         this.word_phonetic = word_phonetic;
+        this.mark = mark;
     }
 
-    public Word(String word_target, String word_explain, String word_phonetic, List<Example> examples) {
+    public Word(int id, String word_target, String word_explain, String word_phonetic, List<Example> examples, boolean mark) {
+        this.word_ID = id;
         this.word_target = word_target;
         this.word_explain = word_explain;
         this.word_phonetic = word_phonetic;
         this.examples = examples;
+        this.mark = mark;
     }
 
     @Override
@@ -129,5 +142,9 @@ public class Word implements Comparable<Word>, Serializable {
             ans += "\n" + i.toString() + "\n";
 
         return ans;
+    }
+
+    public int getWord_ID() {
+        return word_ID;
     }
 }

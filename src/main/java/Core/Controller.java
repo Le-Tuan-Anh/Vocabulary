@@ -1,113 +1,146 @@
 package Core;
 
-import java.io.EOFException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.WriteAbortedException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+// import java.util.LinkedList;
+// import java.util.List;
 import com.sun.speech.freetts.Voice;
 import com.sun.speech.freetts.VoiceManager;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class Controller {
-    private final int minSizeOfListToShow = 0, minSizeOfMarkListToShow = 0;
-    private final File wordListFile = new File(System.getProperty("user.dir") + "/src/resources/wordList.txt");
-    private List<Word> list = new ArrayList<>();
+    private final String URL = "jdbc:mysql://localhost:3306/";
+    private final String DB_NAME = "english";
+    private final String USER_NAME = "root";
+    private final String PASSWORD = "admin";
+    public Connection connection;
+    public Statement statement;
+    public int number_of_word;
+    public int number_of_example;
+    private final int minSizeOfListToShow = 0, maxSizeOfListToShow = 50;
 
-    public void loadFromFile() {
+    public Controller() {
+        openConnection();
+    }
+
+    private void update_number() {
         try {
-            Thread loadData = new Thread() {
-                @Override
-                public void run() {
-                    ObjectInputStream in = null;
-        
-                    try {
-                        in = new ObjectInputStream(new FileInputStream(wordListFile));
-                        
-                        // need to update
-                        Object word;
-                        while ((word = in.readObject()) != null) {
-                            list.add((Word) word);
-                        }
-        
-                        in.close();
-                    } catch (EOFException|WriteAbortedException e) {
-                        // do nothing when in.readObject() == null
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
-                }
-            };
+            String sql = "SELECT count(*) from english.words";
+            ResultSet a = statement.executeQuery(sql);
+            a.next();
+            number_of_word = a.getInt("count(*)");
 
-            loadData.start();
+            sql = "SELECT count(*) from english.examples";
+            a = statement.executeQuery(sql);
+            a.next();
+            number_of_example = a.getInt("count(*)");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public void saveToFile() {
+    private void openConnection() {
         try {
-            Thread saveData = new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(wordListFile));
-            
-                        for (Word i: list)
-                            out.writeObject(i);
-            
-                        out.close();
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
-                }
-            };
-
-            saveData.start();
+            connection = DriverManager.getConnection(URL+DB_NAME, USER_NAME, PASSWORD);
+            statement = connection.createStatement();
+            update_number();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        
+    }
+
+    private void closeConnection() {
+        try {
+            connection.close();
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean includeDB(String wordToCheck) {
+        openConnection();
+        boolean ans = false;
+        try {
+            String sql = "SELECT count(*) FROM english.words WHERE word_target = " + "'" + wordToCheck + "'";
+            ResultSet a = statement.executeQuery(sql);
+            a.next();
+            ans = a.getInt(1) > 0;
+            a.close();
+            closeConnection();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return ans;
+    }
+
+    public void loadExample(Word word) {
+        if (!includeDB(word.getWord_target()) || !word.getExamples().isEmpty())
+            return;
+        openConnection();
+
+        try {
+            String sql = "SELECT * FROM english.examples WHERE word_ID = " + word.getWord_ID();
+            ResultSet a = statement.executeQuery(sql);
+            while (a.next()) {
+                word.addExamples(new Example(a.getInt("example_ID"), a.getInt("word_ID"), a.getString("englishEx"), a.getString("vietEx")));
+            }
+
+            closeConnection();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void add(Word word) {
-        int left = 0, right = list.size()-1, mid;
-
-        if (list.isEmpty() || list.get(right).compareTo(word) < 0) {
-            list.add(word);
-            saveToFile();
+        if (includeDB(word.getWord_target()))
             return;
-        } else if (list.get(0).compareTo(word) > 0) {
-            list.add(0, word);
-            saveToFile();
-            return;
-        }
-        
-        while (right > left + 1) {
-            mid = left + (right - left)/2;
-            int cmp = list.get(mid).compareTo(word);
-            
-            if (cmp > 0) right = mid;
-            else if (cmp < 0) left = mid;
-            else return;
-        }
+        openConnection();
 
-        list.add(left + 1, word);
-        saveToFile();
+        try {
+            String sql = "INSERT INTO english.words (word_target, word_explain, word_phonetic) values ('" +
+                    word.getWord_target() + "', '" + word.getWord_explain() + "', '" + word.getWord_phonetic() + "')";
+            statement.execute(sql);
+
+            if (word.getExamples() != null && !word.getExamples().isEmpty()) {
+                for (Example example : word.getExamples()) {
+                    sql = "INSERT INTO english.examples (word_ID, englishEx, vietEx) value (" +
+                        word.getWord_ID() + ", '" + example.getEnglishEx() + "', '" + example.getVietEx() + "')";
+                    statement.execute(sql);
+                }
+            }
+
+            closeConnection();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void delete(Word word) {
-        if (include(word)) {
-            list.remove(word);
-            saveToFile();
+        if (!includeDB(word.getWord_target()))
+            return;
+        openConnection();
+
+        try {
+            String sql = "DELETE FROM english.words WHERE word_ID = " + word.getWord_ID();
+            statement.execute(sql);
+            sql = "DELETE FROM english.examples WHERE word_ID = " + word.getWord_ID();
+            statement.execute(sql);
+
+            closeConnection();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
     public void saveEdited(Word old, Word newWord) {
+        if (!includeDB(old.getWord_target()))
+            return;
+
         if (old.getWord_explain() != newWord.getWord_explain())
             old.setWord_explain(newWord.getWord_explain());
         if (old.getWord_target() != newWord.getWord_target())
@@ -115,86 +148,82 @@ public class Controller {
         if (old.getWord_phonetic() != newWord.getWord_phonetic())
             old.setWord_phonetic(newWord.getWord_phonetic());
         old.setExamples(newWord.getExamples());
-        saveToFile();
+
+        openConnection();
+
+        try {
+            String sql = "UPDATE english.words SET word_target = '" + newWord.getWord_target() +
+                "', word_explain = '" + newWord.getWord_explain() +
+                "', word_phonetic = '" + newWord.getWord_phonetic() + "' where word_ID = " + old.getWord_ID();
+            statement.execute(sql);
+            sql = "DELETE FROM english.examples WHERE word_ID = " + old.getWord_ID();
+            statement.execute(sql);
+
+            if (newWord.getExamples() != null && !newWord.getExamples().isEmpty()) {
+                for (Example example : newWord.getExamples()) {
+                    sql = "INSERT INTO english.examples (word_ID, englishEx, vietEx) value (" +
+                        old.getWord_ID() + ", '" + example.getEnglishEx() + "', '" + example.getVietEx() + "')";
+                    statement.execute(sql);
+                }
+            }
+
+            closeConnection();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
-    public List<Word> search(String find) {
-        if (find == "")
-            return list;
-
-        List<Word> ans = new ArrayList<>();
-
-        // ans.elements get index of find == 0
-        if (list.size() < 7) {
-            list.forEach(i -> {
-                if (i.getWord_target().indexOf(find) == 0)
-                    ans.add(i);
-            });
-        } else {
-            int left = 0, right = list.size()-1, mid = 0;
-
-            while (left < right - 1) {
-                mid = left + (right - left)/2;
-
-                if (list.get(mid).getWord_target().indexOf(find) == 0)
-                    break;
-                
-                int cmp = list.get(mid).getWord_target().compareTo(find);
-                if (cmp < 0) left = mid;
-                else right = mid;
-            }
-
-            if (left < right - 1) {
-                for (int i = mid; i >= left; i--)
-                    if (list.get(i).getWord_target().indexOf(find) == 0)
-                        ans.add(list.get(i));
-                    else break;
-                for (int i = mid + 1; i <= right; i++)
-                    if (list.get(i).getWord_target().indexOf(find) == 0)
-                        ans.add(list.get(i));
-                    else break;
-            }
+    public ObservableList<Word> search(String wordToFind) {
+        ObservableList<Word> ans = FXCollections.observableArrayList();
+        
+        openConnection();
+        try {
+            String query_words = "SELECT * FROM english.words WHERE word_target like " + "'" + wordToFind + "%'" + " ORDER BY LENGTH(word_target) LIMIT " + maxSizeOfListToShow;
+            ResultSet a = statement.executeQuery(query_words);
+            
+            while(a.next()) {
+                ans.add(new Word(a.getInt("word_ID"), a.getString("word_target"), a.getString("word_explain"), a.getString("word_phonetic"), a.getInt("mark") == 1));
+            } a.close();
+            closeConnection();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
 
-        // make sure ans not too short
-        if (!ans.isEmpty())
-            return ans;
-        else
-            return ans.size() >= minSizeOfListToShow ? ans : search(find.substring(0, find.length()-2));
+        return ans.size() < minSizeOfListToShow && wordToFind.length() <= 1 ?
+            search(wordToFind.substring(0, wordToFind.length()-2)) : ans;
     }
 
     public void mark(Word word) {
-        if (word.isMark())
-            word.setMark(false);
-        else word.setMark(true);
-        saveToFile();
-    }
+        openConnection();
 
-    public List<Word> searchMark(String find) {
-        List<Word> ans = new ArrayList<>();
-
-        if (find == "") {
-            list.forEach(i -> {
-                if (i.isMark())
-                    ans.add(i);
-            });
-
-            return ans;
-        } else {
-            list.forEach(i -> {
-                if (i.getWord_target().contains(find) && i.isMark())
-                    ans.add(i);
-            });
-
-            if (!ans.isEmpty() && ans.get(0).getWord_target().indexOf(find) == 0)
-                return ans;
-            else
-                return ans.size() >= minSizeOfMarkListToShow ? ans : search(find.substring(0, find.length()-2));
+        try {
+            word.mark();
+            String sql = "UPDATE english.words set mark = " + word.isMark() + " WHERE word_ID = " + word.getWord_ID();
+            statement.executeUpdate(sql);
+            closeConnection();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
-    public boolean include(Word word) {
-        return Collections.binarySearch(list, word) >= 0;
+    public ObservableList<Word> searchMark(String wordToFind) {
+        ObservableList<Word> ans = FXCollections.observableArrayList();
+        wordToFind = wordToFind.replace("'", " ");
+        
+        openConnection();
+        try {
+            String sql = "SELECT * FROM english.words WHERE word_target like " + "'" + wordToFind + "%'" + " and mark = 1 ORDER BY word_target";
+            ResultSet a = statement.executeQuery(sql);
+            
+            while(a.next()) {
+                ans.add(new Word(a.getInt("word_ID"), a.getString("word_target"), a.getString("word_explain"), a.getString("word_phonetic"), true));
+            } a.close();
+            closeConnection();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return ans;
     }
 
     public boolean isWord(Word word) {

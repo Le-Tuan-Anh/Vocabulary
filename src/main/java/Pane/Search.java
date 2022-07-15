@@ -87,6 +87,7 @@ public class Search {
             starSymbol.setVisible(false);
             pronounce.setText("");
         } else {
+            Main.controller.loadExample(word);
             definition.setText(word.toString() + "\n" + word.getExamplesToString());
             starSymbol.setVisible(word.isMark() ? true : false);
             pronounce.setText(word.getWord_phonetic());
@@ -129,8 +130,8 @@ public class Search {
             if (eExample.length > 0 && eExample.length == vExample.length)
                 for (int i = 0; i < eExample.length; i++)
                     if (!vExample[i].equals("") && !eExample[i].equals(""))
-                        listEx.add(new Example(vExample[i], eExample[i]));
-            Word editedWord = new Word(editedTarget.getText(), editedExplain.getText(), editedPhonetic.getText(), listEx);
+                        listEx.add(new Example(Main.controller.number_of_word+1, eExample[i], vExample[i]));
+            Word editedWord = new Word(Main.controller.number_of_word+1, editedTarget.getText(), editedExplain.getText(), editedPhonetic.getText(), listEx, selectedWord.isMark());
 
             if (selectedWord != null && Main.controller.isWord(editedWord)) {
                 Main.controller.saveEdited(selectedWord, editedWord);
@@ -174,6 +175,7 @@ public class Search {
     void onMouseClickedEditBtn(MouseEvent event) {
         try {
             Word selectedWord = results.getSelectionModel().getSelectedItem();
+            Main.controller.loadExample(selectedWord);
         
             if (selectedWord != null) {
                 editPane.setVisible(true);

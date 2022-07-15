@@ -56,8 +56,8 @@ public class Add {
             if (eExample.length > 0 && eExample.length == vExample.length)
                 for (int i = 0; i < eExample.length; i++)
                     if (!vExample[i].equals("") && !eExample[i].equals(""))
-                        listEx.add(new Example(vExample[i], eExample[i]));
-            Word word = new Word(target, explain, pronounce, listEx);
+                        listEx.add(new Example(Main.controller.number_of_word+1, vExample[i], eExample[i]));
+            Word word = new Word(Main.controller.number_of_word+1, target, explain, pronounce, listEx, false);
 
             if (Main.controller.isWord(word)) {
                 Main.controller.add(word);
